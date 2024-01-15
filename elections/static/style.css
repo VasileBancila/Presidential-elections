@@ -1,0 +1,23 @@
+h1, thead {
+    text-align: center;
+    margin-block: 20px;
+}
+
+textarea {
+    width: 450px;
+    height: 100px;
+    display: block;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body {
+    background-image: url(background.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    background-size: cover;
+}

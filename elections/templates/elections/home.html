@@ -1,0 +1,34 @@
+{% extends 'elections/base.html' %}
+
+{% include "elections/navbar.html" %}
+
+{% block content %}
+<h2>Ranking of the elections</h2>
+<table class="table w-50 table-striped table-hover border border-black">
+    <thead>
+        <tr class="table-danger">
+            <th scope="col">No</th>
+            <th scope="col">Username</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">No Vote</th>
+            <th scope="col">Vote</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if candidates %}
+            {% for candidate in candidates %}
+                <tr class="table-secondary">
+                    <th>{{ forloop.counter }}</th>
+                    <td><a href="{% url 'profile' %}" class="list-group-item list-group-item-action list-group-item-dark">{{ candidate.user.username }}</a></td>
+                    <td>{{ candidate.user.first_name }}</td>
+                    <td>{{ candidate.user.last_name }}</td>
+                    <td>{{ candidate.no_votes }}</td>
+                    <td><button type="submit" class="btn btn-dark">Vote</button></td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+{% endblock %}

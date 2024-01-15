@@ -1,0 +1,23 @@
+{% extends 'elections/base.html' %}
+
+{% block content %}
+
+{% if profile %}
+    <table class="table w-50 table-striped table-hover border border-black">
+        <thead>
+            <tr class="table-danger table-active">
+                <th scope="col">Profile</th>
+            </tr>
+        </thead>
+        <tbody class="table table-hover">
+            <tr class="table-secondary">
+                {% comment %} <td>{{ profile.user.username }}</td> {% endcomment %}
+                <td>{{ profile.description|linebreaksbr }}</td>
+            </tr>
+        </tbody>
+    </table><br>
+{% else %}
+    <p scope="row">The profile does not exist</p>
+{% endif %}
+
+{% endblock %}
