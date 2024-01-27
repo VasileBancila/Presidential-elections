@@ -1,23 +1,74 @@
 {% extends 'elections/base.html' %}
+{% block title %} Profile Page {% endblock %}
 
 {% block content %}
 
-{% if profile %}
-    <table class="table w-50 table-striped table-hover border border-black">
-        <thead>
-            <tr class="table-danger table-active">
-                <th scope="col">Profile</th>
-            </tr>
-        </thead>
-        <tbody class="table table-hover">
-            <tr class="table-secondary">
-                {% comment %} <td>{{ profile.user.username }}</td> {% endcomment %}
-                <td>{{ profile.description|linebreaksbr }}</td>
-            </tr>
-        </tbody>
-    </table><br>
-{% else %}
-    <p scope="row">The profile does not exist</p>
-{% endif %}
+  {% if messages %}
+    <div id="message-div" class="alert alert-success" role="alert">
+        {% for message in messages %}
+           <div class="mess-div">{{message}}</div>
+        {% endfor %}
+    </div>
+  {% endif %}
+
+  <table class="table w-50 table-striped table-hover border border-black">
+    <thead>
+      <tr class="table-danger table-active">
+        <th scope="col">First name</th>
+        <th scope="col">Last name</th>
+        <th scope="col">Profile description</th>
+      </tr>
+    </thead>
+    <tbody class="table table-hover">
+      <tr class="table-secondary">
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.profiles.description|linebreaksbr }}</td>
+      </tr>
+    </tbody>
+  </table><br />
+
+  <div class="form-content">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="col-md-5">
+          <label class="small mb-1" style="font-weight: bold;">Description:</label> {{ profile_form.description }}
+        </div>
+      </div>
+      <br/>
+      <button type="submit" class="btn btn-dark btn-lg">Save Changes</button>
+      <button type="reset" class="btn btn-dark btn-lg">Reset</button>
+    </form>
+  </div><br>
+
+  <div class="form-content">
+    <form action="{% url 'register_candidate' %}" method="POST">
+      {% csrf_token %}
+      <div class="form-row">
+          <label style="font-weight: bold;">Election candidacy status:</label>
+          {% if user.candidate_status.election_candidacy == True %}
+            <div class="alert alert-success">
+              You are registered for the elections.
+            </div>
+          {% else %}
+            <div class="alert alert-success">
+              You are not registered for the elections.
+            </div>
+          {% endif %}
+      </div>
+      <div class="form-row">
+        <button type="submit" class="btn btn-dark btn-lg">Register</button>
+      </div>
+    </form>
+  </div>
+
+
+  <script>
+    const messageDiv = document.getElementById('message-div');
+    setTimeout(() => {
+      messageDiv.style.display = 'none';
+    }, 5000);
+  </script>
 
 {% endblock %}

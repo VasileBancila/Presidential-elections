@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from .models import *
-from .forms import CreateUserForm
+from .forms import CreateUserForm, EditProfileDescriptionForm
 
 @login_required(login_url='login')
 def home(request):
@@ -59,4 +59,26 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def profile(request):
-     return render(request, 'elections/profile.html')
+    if request.method == 'POST':
+        profile_form = EditProfileDescriptionForm(request.POST, request.FILES, instance=request.user.profiles)
+
+        if profile_form.is_valid():
+            profile_form.save()
+            messages.success(request, 'Your profile is updated successfully!')
+            return redirect('users-profile')
+    else:
+        profile_form = EditProfileDescriptionForm(instance=request.user.profiles)
+
+    return render(request, 'elections/profile.html', {'profile_form': profile_form})
+
+def register_candidate(request):
+    if request.method == 'POST':
+        user = request.user
+        candidate_status = Candidate_Status.objects.create(user=user)
+        candidate_status.save()
+        candidate_status.election_candidacy = True
+        candidate_status.save()
+        return redirect('users-profile')
+    else:
+        return render(request, 'elections/profile.html')
+    

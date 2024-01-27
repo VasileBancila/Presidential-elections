@@ -20,7 +20,7 @@
             {% for candidate in candidates %}
                 <tr class="table-secondary">
                     <th>{{ forloop.counter }}</th>
-                    <td><a href="{% url 'profile' %}" class="list-group-item list-group-item-action list-group-item-dark">{{ candidate.user.username }}</a></td>
+                    <td><a href="{% url 'users-profile' %}" class="list-group-item list-group-item-action list-group-item-dark">{{ candidate.user.username }}</a></td>
                     <td>{{ candidate.user.first_name }}</td>
                     <td>{{ candidate.user.last_name }}</td>
                     <td>{{ candidate.no_votes }}</td>
