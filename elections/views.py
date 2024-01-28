@@ -67,7 +67,7 @@ def profile(request):
             messages.success(request, 'Your profile is updated successfully!')
             return redirect('users-profile')
     else:
-        profile_form = EditProfileDescriptionForm(instance=request.user.profiles)
+        profile_form = EditProfileDescriptionForm()
 
     return render(request, 'elections/profile.html', {'profile_form': profile_form})
 
@@ -81,4 +81,13 @@ def register_candidate(request):
         return redirect('users-profile')
     else:
         return render(request, 'elections/profile.html')
-    
+
+def candidate_profile(request, user_id):
+    candidate_profile = Profiles.objects.get(user_id=user_id)
+    if candidate_profile:
+        profile = candidate_profile
+    else:
+        profile = None
+
+    context = {'profile': profile}
+    return render(request, 'elections/candidate_profile.html', context)

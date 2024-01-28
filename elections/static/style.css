@@ -1,6 +1,5 @@
-h1, thead {
+h1, thead, title {
     text-align: center;
-    margin-block: 20px;
 }
 
 textarea {
