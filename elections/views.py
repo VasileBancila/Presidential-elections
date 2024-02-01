@@ -3,17 +3,15 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-
-from .models import *
+from .models import Profile, CandidacyAndVot, Candidate
 from .forms import CreateUserForm, EditProfileDescriptionForm
 
 @login_required(login_url='login')
 def home(request):
     try:
-        candidates = Candidate_Status.objects.all()
+        candidates = Candidate.objects.all()
         candidates = candidates.order_by('-no_votes')
-    except Candidate_Status.DoesNotExist:
+    except Candidate.DoesNotExist:
         candidates = None
 
     context = {'candidates': candidates}
@@ -58,36 +56,57 @@ def logoutUser(request):
     return redirect('login')
 
 @login_required(login_url='login')
-def profile(request):
+def userProfile(request):
     if request.method == 'POST':
-        profile_form = EditProfileDescriptionForm(request.POST, request.FILES, instance=request.user.profiles)
+        profile_form = EditProfileDescriptionForm(request.POST, request.FILES, instance=request.user.profile)
 
         if profile_form.is_valid():
             profile_form.save()
             messages.success(request, 'Your profile is updated successfully!')
-            return redirect('users-profile')
+            return redirect('userProfile')
     else:
         profile_form = EditProfileDescriptionForm()
 
-    return render(request, 'elections/profile.html', {'profile_form': profile_form})
+    return render(request, 'elections/userProfile.html', {'profile_form': profile_form})
 
-def register_candidate(request):
-    if request.method == 'POST':
-        user = request.user
-        candidate_status = Candidate_Status.objects.create(user=user)
-        candidate_status.save()
-        candidate_status.election_candidacy = True
-        candidate_status.save()
-        return redirect('users-profile')
-    else:
-        return render(request, 'elections/profile.html')
+def registerCandidacy(request):
+    user = request.user
+    candidacy = CandidacyAndVot.objects.get(user=user)
+    
+    if request.method == 'POST' and not candidacy.election_candidacy:
+        candidate = Candidate.objects.create(user=user)
+        candidate.save()
+        candidacy.election_candidacy = True
+        candidacy.save()
 
-def candidate_profile(request, user_id):
-    candidate_profile = Profiles.objects.get(user_id=user_id)
+    return redirect('userProfile')
+
+def candidateProfile(request, user_id):
+    candidate_profile = Profile.objects.get(user_id=user_id)
     if candidate_profile:
         profile = candidate_profile
     else:
         profile = None
 
     context = {'profile': profile}
-    return render(request, 'elections/candidate_profile.html', context)
+    return render(request, 'elections/candidateProfile.html', context)
+
+def voteCandidate(request, user_id):
+    if request.method == 'POST':
+        user = request.user
+        voter = CandidacyAndVot.objects.get(user_id=user)
+        candidate = Candidate.objects.get(user_id=user_id)
+        
+        if voter.user != candidate.user:
+            if not voter.voted:
+                candidate.no_votes += 1
+                candidate.save()
+                voter.voted = True
+                voter.save()
+                messages.success(request, 'Your vote has been registered for ' + str(candidate.user) + "!")
+            else:
+                messages.success(request, 'You have already voted!')
+        else:
+            messages.success(request, "You can't vote for yourself!")
+    
+    return redirect('home')

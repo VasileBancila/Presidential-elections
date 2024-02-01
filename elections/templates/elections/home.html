@@ -1,34 +1,56 @@
 {% extends 'elections/base.html' %}
-
-{% include "elections/navbar.html" %}
+{% include 'elections/navbar.html' %}
 
 {% block content %}
-<h2>Ranking of the elections</h2>
-<table class="table w-50 table-striped table-hover border border-black">
+  <h2>Ranking of the elections</h2>
+
+  <table class="table w-50 table-striped table-hover border border-black">
     <thead>
-        <tr class="table-danger">
-            <th scope="col">No</th>
-            <th scope="col">Username</th>
-            <th scope="col">First Name</th>
-            <th scope="col">Last Name</th>
-            <th scope="col">No Vote</th>
-            <th scope="col">Vote</th>
-        </tr>
+      <tr class="table-danger">
+        <th scope="col">No</th>
+        <th scope="col">Username</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">No Vote</th>
+        <th scope="col">Vote</th>
+      </tr>
     </thead>
     <tbody>
-        {% if candidates %}
-            {% for candidate in candidates %}
-                <tr class="table-secondary">
-                    <th>{{ forloop.counter }}</th>
-                    <td><a href="{% url 'candidate_profile' candidate.user_id %}" class="list-group-item list-group-item-action list-group-item-dark">{{ candidate.user.username }}</a></td>
-                    <td>{{ candidate.user.first_name }}</td>
-                    <td>{{ candidate.user.last_name }}</td>
-                    <td>{{ candidate.no_votes }}</td>
-                    <td><button type="submit" class="btn btn-dark">Vote</button></td>
-                </tr>
-            {% endfor %}
-        {% endif %}
+      {% if candidates %}
+        {% for candidate in candidates %}
+          <tr class="table-secondary">
+            <th>{{ forloop.counter }}</th>
+            <td>
+              <a href="{% url 'candidateProfile' candidate.user_id %}" class="list-group-item list-group-item-action list-group-item-dark">{{ candidate.user.username }}</a>
+            </td>
+            <td>{{ candidate.user.first_name }}</td>
+            <td>{{ candidate.user.last_name }}</td>
+            <td>{{ candidate.no_votes }}</td>
+            <td>
+              <form action="{% url 'voteCandidate' candidate.user_id %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ candidate.user_id }}" />
+                <button type="submit" class="btn btn-dark" value="Vote">Vote</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      {% endif %}
     </tbody>
-</table>
+  </table>
 
+  {% if messages %}
+    <div id="message-div" class="alert alert-success" role="alert">
+      {% for message in messages %}
+        <div class="mess-div">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <script>
+    const messageDiv = document.getElementById('message-div')
+    setTimeout(() => {
+      messageDiv.style.display = 'none'
+    }, 5000)
+  </script>
 {% endblock %}

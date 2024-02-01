@@ -1,7 +1,7 @@
 from django import forms 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profiles, Candidate_Status
+from .models import Profile
 
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -10,5 +10,5 @@ class CreateUserForm(UserCreationForm):
         
 class EditProfileDescriptionForm(forms.ModelForm):
     class Meta:
-        model = Profiles
+        model = Profile
         fields = ['description']

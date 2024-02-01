@@ -22,7 +22,7 @@
       <tr class="table-secondary">
         <td>{{ user.first_name }}</td>
         <td>{{ user.last_name }}</td>
-        <td>{{ user.profiles.description|linebreaksbr }}</td>
+        <td>{{ user.profile.description|linebreaksbr }}</td>
       </tr>
     </tbody>
   </table><br />
@@ -42,11 +42,11 @@
   </div><br>
 
   <div class="form-content">
-    <form action="{% url 'register_candidate' %}" method="POST">
+    <form action="{% url 'registerCandidacy' %}" method="POST">
       {% csrf_token %}
       <div class="form-row">
           <label style="font-weight: bold;">Election candidacy status:</label>
-          {% if user.candidate_status.election_candidacy == True %}
+          {% if user.candidacyandvot.election_candidacy == True %}
             <div class="alert alert-success">
               You are registered for the elections.
             </div>
@@ -61,7 +61,6 @@
       </div>
     </form>
   </div>
-
 
   <script>
     const messageDiv = document.getElementById('message-div');
