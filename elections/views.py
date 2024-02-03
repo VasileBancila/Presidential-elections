@@ -47,7 +47,7 @@ def loginUser(request):
                 login(request, user)
                 return redirect('home')
             else:
-                messages.info(request, 'Username or Password is incorrect')
+                messages.error(request, 'Username or Password is incorrect')
                 
         return render(request, 'elections/login.html')
 
@@ -105,8 +105,8 @@ def voteCandidate(request, user_id):
                 voter.save()
                 messages.success(request, 'Your vote has been registered for ' + str(candidate.user) + "!")
             else:
-                messages.success(request, 'You have already voted!')
+                messages.error(request, 'You have already voted!')
         else:
-            messages.success(request, "You can't vote for yourself!")
+            messages.error(request, "You can't vote for yourself!")
     
     return redirect('home')
