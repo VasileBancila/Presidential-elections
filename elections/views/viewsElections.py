@@ -2,28 +2,25 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from ..models import Profile, CandidacyAndVot, Candidate
+from ..models import Profile
 
 @login_required(login_url='login')
 def home(request):
-    try:
-        candidates = Candidate.objects.all()
-        candidates = candidates.order_by('-no_votes')
-    except Candidate.DoesNotExist:
-        candidates = None
-
+    candidates = Profile.objects.filter(election_candidacy = True).order_by('-no_votes')
+    
+    if not candidates:
+        messages.error(request, 'No candidate registered for the election!')
+    
     context = {'candidates': candidates}
     return render(request, 'elections/home.html', context)
 
 def registerCandidacy(request):
     user = request.user
-    candidacy = CandidacyAndVot.objects.get(user=user)
+    candidate = Profile.objects.get(user=user)
     
-    if request.method == 'POST' and not candidacy.election_candidacy:
-        candidate = Candidate.objects.create(user=user)
+    if request.method == 'POST' and not candidate.election_candidacy:
+        candidate.election_candidacy = True
         candidate.save()
-        candidacy.election_candidacy = True
-        candidacy.save()
 
     return redirect('userProfile')
 
@@ -40,8 +37,8 @@ def candidateProfile(request, user_id):
 def voteCandidate(request, user_id):
     if request.method == 'POST':
         user = request.user
-        voter = CandidacyAndVot.objects.get(user_id=user)
-        candidate = Candidate.objects.get(user_id=user_id)
+        voter = Profile.objects.get(user_id=user)
+        candidate = Profile.objects.get(user_id=user_id)
         
         if voter.user != candidate.user:
             if not voter.voted:
