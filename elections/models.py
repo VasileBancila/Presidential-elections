@@ -19,8 +19,8 @@ class ElectionRound(models.Model):
     
 class Voter(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    election_rounds = models.ManyToManyField(ElectionRound)
-    has_voted = models.BooleanField(default=False)
+    election_round = models.ManyToManyField(ElectionRound)
+    candidate = models.CharField(User, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.user.username
@@ -30,11 +30,11 @@ class Voter(models.Model):
 
 class ElectionRanking(models.Model):
     election_round = models.ForeignKey(ElectionRound, on_delete=models.CASCADE)
-    candidate = models.ForeignKey(User, on_delete=models.CASCADE)
+    candidate = models.CharField(max_length=100)
     no_votes = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.election_round} - {self.candidate.username}"
+        return f"{self.election_round} - {self.candidate}"
 
     class Meta:
         unique_together = ("election_round", "candidate")
