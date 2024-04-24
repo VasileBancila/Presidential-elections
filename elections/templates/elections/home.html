@@ -2,7 +2,9 @@
 {% include 'elections/navbar.html' %}
 
 {% block content %}
-  <h2>Ranking of the elections</h2>
+  <h2>Ranking of the elections in the</h2>
+  <h3>{{round.name}}</h3>
+  <h5>{{round.start_date}} - {{round.end_date}}</h5>
 
   <table class="table w-50 table-striped table-hover border border-black">
     <thead>
@@ -21,17 +23,18 @@
           <tr class="table-secondary">
             <th>{{ forloop.counter }}</th>
             <td>
-              <a href="{% url 'candidateProfile' candidate.user_id %}" class="list-group-item list-group-item-action list-group-item-dark">{{ candidate.user.username }}</a>
+              <a href="{% url 'candidateProfile' candidate.candidate.id %}" class="list-group-item list-group-item-action list-group-item-dark">{{ candidate.candidate.username }}</a>
             </td>
-            <td>{{ candidate.user.first_name }}</td>
-            <td>{{ candidate.user.last_name }}</td>
+            <td>{{ candidate.candidate.first_name }}</td>
+            <td>{{ candidate.candidate.last_name }}</td>
             <td>{{ candidate.no_votes }}</td>
             <td>
-              <form action="{% url 'voteCandidate' candidate.user_id %}" method="POST">
+              Vote
+              {% comment %} <form action="{% url 'voteCandidate' candidate.user_id %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="user_id" value="{{ candidate.user_id }}" />
                 <button type="submit" class="btn btn-dark" value="Vote">Vote</button>
-              </form>
+              </form> {% endcomment %}
             </td>
           </tr>
         {% endfor %}

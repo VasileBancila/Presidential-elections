@@ -1,0 +1,25 @@
+{% extends 'elections/base.html' %}
+<!--
+{% block content %}
+<table class="table w-50 table-striped table-hover border border-black">
+    <thead>
+        <tr class="table-danger">
+            <th scope="col">Content comments</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if comments %}
+        {% for comment in comments %}
+        <tr class="table-secondary">
+            <td><a href="{% url 'whole' comment.id %}" class="list-group-item">{{ comment.comment|truncatechars:60|linebreaksbr }}</a></td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table><br>
+<form class="form-align" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}-->

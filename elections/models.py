@@ -16,21 +16,10 @@ class ElectionRound(models.Model):
 
     def __str__(self):
         return self.name
-    
-class Voter(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    election_round = models.ManyToManyField(ElectionRound)
-    candidate = models.CharField(User, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return self.user.username
-    
-    class Meta:
-        unique_together = ("user", "election_round")
 
 class ElectionRanking(models.Model):
     election_round = models.ForeignKey(ElectionRound, on_delete=models.CASCADE)
-    candidate = models.CharField(max_length=100)
+    candidate = models.ForeignKey(User, on_delete=models.CASCADE)
     no_votes = models.IntegerField(default=0)
 
     def __str__(self):
@@ -38,3 +27,14 @@ class ElectionRanking(models.Model):
 
     class Meta:
         unique_together = ("election_round", "candidate")
+    
+class Voter(models.Model):
+    user_votes = models.ForeignKey(User, on_delete=models.CASCADE)
+    election_round = models.ForeignKey(ElectionRound, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(ElectionRanking, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.user_votes.username
+    
+    class Meta:
+        unique_together = ("user_votes", "election_round")

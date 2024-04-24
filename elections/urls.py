@@ -5,10 +5,11 @@ urlpatterns = [
     path('registration/', views.registrationUser, name='registration'),
     path('login/', views.loginUser, name='login'),
     path('logout/', views.logoutUser, name='logout'),
+    path('userProfile/', views.userProfile, name='userProfile'),
     
     path('home/', views.home, name='home'),
-    path('userProfile/', views.userProfile, name='userProfile'),
-    path('candidateProfile/<user_id>/', views.candidateProfile, name='candidateProfile'),
+    path('candidateProfile/<id>/', views.candidateProfile, name='candidateProfile'),
     path('registerCandidacy/', views.registerCandidacy, name='registerCandidacy'),
-    path('voteCandidate/<user_id>/', views.voteCandidate, name='voteCandidate'),
+    #path('voteCandidate/<user_id>/', views.voteCandidate, name='voteCandidate'),
+    #path('electionRounds/', views.electionRounds, name='electionRounds'),
 ]

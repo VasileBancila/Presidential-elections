@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from ..forms import CreateUserForm, EditProfileDescriptionForm
+from ..models import ElectionRanking, ElectionRound
 
 def registrationUser(request):
     if request.user.is_authenticated:
@@ -55,4 +56,9 @@ def userProfile(request):
     else:
         profile_form = EditProfileDescriptionForm()
 
-    return render(request, 'elections/userProfile.html', {'profile_form': profile_form})
+    user = request.user
+    current_election_round = ElectionRound.objects.get(ongoing=True)
+    existing_candidate = ElectionRanking.objects.filter(candidate=user, election_round=current_election_round).exists()    
+    context = {'profile_form': profile_form, 'existing_candidate': existing_candidate}
+
+    return render(request, 'elections/userProfile.html', context)

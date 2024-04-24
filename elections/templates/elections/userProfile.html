@@ -46,7 +46,7 @@
       {% csrf_token %}
       <div class="form-row">
           <label style="font-weight: bold;">Election candidacy status:</label>
-          {% if user.profile.election_candidacy == True %}
+          {% if existing_candidate %}
             <div class="alert alert-success">
               You are registered for the elections.
             </div>
