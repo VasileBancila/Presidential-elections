@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from ..models import Profile, Voter, ElectionRanking, ElectionRound
+from django.contrib.auth.models import User
 
 @login_required(login_url='login')
 def home(request):
@@ -43,25 +44,35 @@ def candidateProfile(request, id):
     context = {'profile': profile}
     return render(request, 'elections/candidateProfile.html', context)
 
-# def voteCandidate(request, user_id):
-#     if request.method == 'POST':
-#         user = request.user
-#         voter = Profile.objects.get(user_id=user)
-#         candidate = Profile.objects.get(user_id=user_id)
+def voteCandidate(request, candidate_id):
+    if request.method == 'POST':
+        voter = request.user
+        candidate_user = User.objects.get(id=candidate_id)
+        current_election_round = ElectionRound.objects.get(ongoing=True)
+        current_candidate = ElectionRanking.objects.get(candidate=candidate_user, election_round=current_election_round)
+        existing_vote = Voter.objects.filter(user_votes=voter, election_round=current_election_round).exists()
         
-#         if voter.user != candidate.user:
-#             if not voter.voted:
-#                 candidate.no_votes += 1
-#                 candidate.save()
-#                 voter.voted = True
-#                 voter.save()
-#                 messages.success(request, 'Your vote has been registered for ' + str(candidate.user) + "!")
-#             else:
-#                 messages.error(request, 'You have already voted!')
-#         else:
-#             messages.error(request, "You can't vote for yourself!")
+        if voter != current_candidate.candidate:
+            if not existing_vote:
+                current_candidate.no_votes += 1
+                current_candidate.save()
+                
+                new_voter = Voter(user_votes=voter, election_round=current_election_round, candidate=current_candidate)
+                new_voter.save()
+                messages.success(request, 'Your vote has been registered for ' + str(current_candidate.candidate) + "!")
+            else:
+                messages.error(request, 'You have already voted!')
+        else:
+            messages.error(request, "You can't vote for yourself!")
     
-#     return redirect('home')
+    return redirect('home')
 
-# def electionRounds(request):
-#     return render(request, 'elections/electionRounds.html')
+def electionRounds(request):
+    rounds = ElectionRound.objects.all()
+    return render(request, 'elections/electionRounds.html', {'rounds': rounds})
+
+def roundRanking(request, round_id):
+    round = ElectionRound.objects.get(id=round_id)
+    ranking = ElectionRanking.objects.filter(election_round=round).order_by('-no_votes')
+    context = {'ranking': ranking, 'round': round}
+    return render(request, 'elections/roundRanking.html', context)

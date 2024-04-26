@@ -21,7 +21,7 @@
       {% if candidates %}
         {% for candidate in candidates %}
           <tr class="table-secondary">
-            <th>{{ forloop.counter }}</th>
+            <td>{{ forloop.counter }}</td>
             <td>
               <a href="{% url 'candidateProfile' candidate.candidate.id %}" class="list-group-item list-group-item-action list-group-item-dark">{{ candidate.candidate.username }}</a>
             </td>
@@ -29,12 +29,11 @@
             <td>{{ candidate.candidate.last_name }}</td>
             <td>{{ candidate.no_votes }}</td>
             <td>
-              Vote
-              {% comment %} <form action="{% url 'voteCandidate' candidate.user_id %}" method="POST">
+              <form action="{% url 'voteCandidate' candidate.candidate.id %}" method="POST">
                 {% csrf_token %}
-                <input type="hidden" name="user_id" value="{{ candidate.user_id }}" />
+                <input type="hidden" name="candidate_id" value="{{ candidate.candidate.id }}" />
                 <button type="submit" class="btn btn-dark" value="Vote">Vote</button>
-              </form> {% endcomment %}
+              </form>
             </td>
           </tr>
         {% endfor %}

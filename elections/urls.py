@@ -10,6 +10,8 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('candidateProfile/<id>/', views.candidateProfile, name='candidateProfile'),
     path('registerCandidacy/', views.registerCandidacy, name='registerCandidacy'),
-    #path('voteCandidate/<user_id>/', views.voteCandidate, name='voteCandidate'),
-    #path('electionRounds/', views.electionRounds, name='electionRounds'),
+    path('voteCandidate/<candidate_id>/', views.voteCandidate, name='voteCandidate'),
+    path('electionRounds/', views.electionRounds, name='electionRounds'),
+    path('roundRanking/<round_id>/', views.roundRanking, name='roundRanking'),
+    
 ]

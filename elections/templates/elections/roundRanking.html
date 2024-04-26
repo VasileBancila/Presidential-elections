@@ -1,0 +1,32 @@
+{% extends 'elections/base.html' %}
+
+{% block content %}
+  <h2>Ranking of the elections in the</h2>
+  <h3>{{round.name}}</h3>
+  <h5>{{round.start_date}} - {{round.end_date}}</h5>
+
+  <table class="table w-50 table-striped table-hover border border-black">
+    <thead>
+      <tr class="table-danger">
+        <th scope="col">No</th>
+        <th scope="col">Username</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">No Vote</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if ranking %}
+        {% for candidate in ranking %}
+          <tr class="table-secondary">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ candidate.candidate.username }} </td>
+            <td>{{ candidate.candidate.first_name }}</td>
+            <td>{{ candidate.candidate.last_name }}</td>
+            <td>{{ candidate.no_votes }}</td>
+          </tr>
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+{% endblock %}

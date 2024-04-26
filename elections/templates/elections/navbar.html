@@ -6,11 +6,11 @@
       <ul class="navbar-nav">
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}">Election Results</a>
+            <a class="nav-link" href="{% url 'home' %}">Current Election</a>
           </li>
-          {% comment %} <li class="nav-item">
+          <li class="nav-item">
             <a class="nav-link" href="{% url 'electionRounds' %}">Election Rounds</a>
-          </li> {% endcomment %}
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'userProfile' %}">Profile</a>
           </li>

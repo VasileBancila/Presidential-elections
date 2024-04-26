@@ -1,25 +1,31 @@
 {% extends 'elections/base.html' %}
-<!--
+
 {% block content %}
+<h2>All election rounds</h2>
 <table class="table w-50 table-striped table-hover border border-black">
     <thead>
         <tr class="table-danger">
-            <th scope="col">Content comments</th>
+            <th scope="col">No</th>
+            <th scope="col">Election rounds</th>
+            <th scope="col">Start date</th>
+            <th scope="col">End date</th>
+            <th scope="col">Ongoing</th>
         </tr>
     </thead>
     <tbody>
-        {% if comments %}
-        {% for comment in comments %}
+        {% if rounds %}
+        {% for round in rounds %}
         <tr class="table-secondary">
-            <td><a href="{% url 'whole' comment.id %}" class="list-group-item">{{ comment.comment|truncatechars:60|linebreaksbr }}</a></td>
+            <td>{{ forloop.counter }}</td>
+            <td>
+                <a href="{% url 'roundRanking' round.id %}" class="list-group-item list-group-item-action list-group-item-dark">{{ round.name }}</a>
+            </td>
+            <td>{{ round.start_date }}</td>
+            <td>{{ round.end_date }}</td>
+            <td>{{ round.ongoing }}</td>
         </tr>
         {% endfor %}
         {% endif %}
     </tbody>
 </table><br>
-<form class="form-align" method="POST">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-{% endblock %}-->
+{% endblock %}

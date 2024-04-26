@@ -34,7 +34,7 @@ class Voter(models.Model):
     candidate = models.ForeignKey(ElectionRanking, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.user_votes.username
+        return self.user_votes.username + "-" + self.election_round.name
     
     class Meta:
         unique_together = ("user_votes", "election_round")
