@@ -6,7 +6,7 @@ from django.contrib import messages
 from ..forms import CreateUserForm, EditProfileDescriptionForm
 from ..models import ElectionRanking, ElectionRound
 
-def registrationUser(request):
+def register_user(request):
     if request.user.is_authenticated:
         return redirect('home')
     else:
@@ -20,9 +20,9 @@ def registrationUser(request):
                 return redirect('login')
                 
         context = {'form': form}
-        return render(request, 'elections/registration.html', context)
+        return render(request, 'elections/register.html', context)
 
-def loginUser(request):
+def login_user(request):
     if request.user.is_authenticated:
         return redirect('home')
     else:    
@@ -40,25 +40,31 @@ def loginUser(request):
                 
         return render(request, 'elections/login.html')
 
-def logoutUser(request):
+def logout_user(request):
     logout(request)
     return redirect('login')
 
 @login_required(login_url='login')
-def userProfile(request):
+def user_profile(request):
     if request.method == 'POST':
         profile_form = EditProfileDescriptionForm(request.POST, request.FILES, instance=request.user.profile)
 
         if profile_form.is_valid():
             profile_form.save()
             messages.success(request, 'Your profile is updated successfully!')
-            return redirect('userProfile')
+            return redirect('user_profile')
     else:
         profile_form = EditProfileDescriptionForm()
 
     user = request.user
-    current_election_round = ElectionRound.objects.get(ongoing=True)
-    existing_candidate = ElectionRanking.objects.filter(candidate=user, election_round=current_election_round).exists()    
-    context = {'profile_form': profile_form, 'existing_candidate': existing_candidate}
+    
+    try:
+        current_round = ElectionRound.objects.get(ongoing=True)
+        existing_candidate = ElectionRanking.objects.filter(candidate=user, election_round=current_round).exists()    
+    except ElectionRound.DoesNotExist:
+        current_round = None
+        existing_candidate = False
+    
+    context = {'profile_form': profile_form, 'existing_candidate': existing_candidate, 'current_round': current_round}
 
-    return render(request, 'elections/userProfile.html', context)
+    return render(request, 'elections/user_profile.html', context)

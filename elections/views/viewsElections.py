@@ -4,9 +4,20 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from ..models import Profile, Voter, ElectionRanking, ElectionRound
 from django.contrib.auth.models import User
+from django.utils import timezone
+
+def check_round_expiration():
+    rounds = ElectionRound.objects.all()
+    current_time = timezone.now().date()
+
+    for round in rounds:
+        if round.end_date < current_time:
+            round.ongoing = False
+            round.save()
 
 @login_required(login_url='login')
 def home(request):
+    check_round_expiration()
     try:
         round = ElectionRound.objects.get(ongoing=True)
         candidates = ElectionRanking.objects.filter(election_round=round).order_by('-no_votes')
@@ -20,7 +31,7 @@ def home(request):
 
     return render(request, 'elections/home.html', context)
 
-def registerCandidacy(request):
+def register_candidacy(request):
     user = request.user
     current_election_round = ElectionRound.objects.get(ongoing=True)
     existing_candidate = ElectionRanking.objects.filter(candidate=user, election_round=current_election_round).exists()
@@ -32,9 +43,9 @@ def registerCandidacy(request):
     else:
         messages.error(request, "You are already registered for this election round.")
 
-    return redirect('userProfile')
+    return redirect('user_profile')
 
-def candidateProfile(request, id):
+def candidate_profile(request, id):
     candidate_profile = Profile.objects.get(user=id)
     if candidate_profile:
         profile = candidate_profile
@@ -42,9 +53,9 @@ def candidateProfile(request, id):
         profile = None
 
     context = {'profile': profile}
-    return render(request, 'elections/candidateProfile.html', context)
+    return render(request, 'elections/candidate_profile.html', context)
 
-def voteCandidate(request, candidate_id):
+def vote_candidate(request, candidate_id):
     if request.method == 'POST':
         voter = request.user
         candidate_user = User.objects.get(id=candidate_id)
@@ -67,12 +78,12 @@ def voteCandidate(request, candidate_id):
     
     return redirect('home')
 
-def electionRounds(request):
+def election_rounds(request):
     rounds = ElectionRound.objects.all()
-    return render(request, 'elections/electionRounds.html', {'rounds': rounds})
+    return render(request, 'elections/election_rounds.html', {'rounds': rounds})
 
-def roundRanking(request, round_id):
+def round_ranking(request, round_id):
     round = ElectionRound.objects.get(id=round_id)
     ranking = ElectionRanking.objects.filter(election_round=round).order_by('-no_votes')
     context = {'ranking': ranking, 'round': round}
-    return render(request, 'elections/roundRanking.html', context)
+    return render(request, 'elections/round_ranking.html', context)

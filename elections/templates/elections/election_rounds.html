@@ -18,7 +18,7 @@
         <tr class="table-secondary">
             <td>{{ forloop.counter }}</td>
             <td>
-                <a href="{% url 'roundRanking' round.id %}" class="list-group-item list-group-item-action list-group-item-dark">{{ round.name }}</a>
+                <a href="{% url 'round_ranking' round.id %}" class="list-group-item list-group-item-action list-group-item-dark">{{ round.name }}</a>
             </td>
             <td>{{ round.start_date }}</td>
             <td>{{ round.end_date }}</td>

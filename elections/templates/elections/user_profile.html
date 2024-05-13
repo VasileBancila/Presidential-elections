@@ -1,12 +1,12 @@
 {% extends 'elections/base.html' %}
 
 {% block content %}
-  <h2>Profile Page</h2><br>
+  <h2>Profile Page</h2><br />
   {% if messages %}
     <div id="message-div" class="alert alert-success" role="alert">
-        {% for message in messages %}
-           <div class="mess-div">{{message}}</div>
-        {% endfor %}
+      {% for message in messages %}
+        <div class="mess-div">{{ message }}</div>
+      {% endfor %}
     </div>
   {% endif %}
 
@@ -35,38 +35,38 @@
           <label class="small mb-1" style="font-weight: bold;">Description:</label> {{ profile_form.description }}
         </div>
       </div>
-      <br/>
+      <br />
       <button type="submit" class="btn btn-dark btn-lg">Save Changes</button>
       <button type="reset" class="btn btn-dark btn-lg">Reset</button>
     </form>
-  </div><br>
+  </div><br />
 
   <div class="form-content">
-    <form action="{% url 'registerCandidacy' %}" method="POST">
+    <form action="{% url 'register_candidacy' %}" method="POST">
       {% csrf_token %}
       <div class="form-row">
-          <label style="font-weight: bold;">Election candidacy status:</label>
+        <label style="font-weight: bold;">Election candidacy status:</label>
+        {% if current_round %}
           {% if existing_candidate %}
-            <div class="alert alert-success">
-              You are registered for the elections.
-            </div>
+            <div class="alert alert-success">You are registered for the current elections.</div>
           {% else %}
-            <div class="alert alert-success">
-              You are not registered for the elections.
-            </div>
+            <div class="alert alert-success">You are not registered for the current elections.</div>
           {% endif %}
+        {% else %}
+          <div class="alert alert-success">You cannot submit your candidacy, there are no elections in progress.</div>
+        {% endif %}
       </div>
       <div class="form-row">
-        <button type="submit" class="btn btn-dark btn-lg">Register</button>
+        <button type="submit" class="btn btn-dark btn-lg"
+        {% if not current_round or existing_candidate %}disabled{% endif %}>Register</button>
       </div>
     </form>
   </div>
 
   <script>
-    const messageDiv = document.getElementById('message-div');
+    const messageDiv = document.getElementById('message-div')
     setTimeout(() => {
-      messageDiv.style.display = 'none';
-    }, 5000);
+      messageDiv.style.display = 'none'
+    }, 5000)
   </script>
-
 {% endblock %}

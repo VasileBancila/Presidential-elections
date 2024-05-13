@@ -23,13 +23,13 @@
           <tr class="table-secondary">
             <td>{{ forloop.counter }}</td>
             <td>
-              <a href="{% url 'candidateProfile' candidate.candidate.id %}" class="list-group-item list-group-item-action list-group-item-dark">{{ candidate.candidate.username }}</a>
+              <a href="{% url 'candidate_profile' candidate.candidate.id %}" class="list-group-item list-group-item-action list-group-item-dark">{{ candidate.candidate.username }}</a>
             </td>
             <td>{{ candidate.candidate.first_name }}</td>
             <td>{{ candidate.candidate.last_name }}</td>
             <td>{{ candidate.no_votes }}</td>
             <td>
-              <form action="{% url 'voteCandidate' candidate.candidate.id %}" method="POST">
+              <form action="{% url 'vote_candidate' candidate.candidate.id %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="candidate_id" value="{{ candidate.candidate.id }}" />
                 <button type="submit" class="btn btn-dark" value="Vote">Vote</button>
