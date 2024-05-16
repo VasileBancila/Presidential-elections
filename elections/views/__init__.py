@@ -1,2 +1,2 @@
-from .viewsElections import *
-from .viewsUser import *
+from .elections import *
+from .user import *

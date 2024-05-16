@@ -20,7 +20,8 @@ def home(request):
     check_round_expiration()
     try:
         round = ElectionRound.objects.get(ongoing=True)
-        candidates = ElectionRanking.objects.filter(election_round=round).order_by('-no_votes')
+        candidates = ElectionRanking.objects.filter(
+            election_round=round).order_by('-no_votes')
         context = {'candidates': candidates, 'round': round}
     except ElectionRound.DoesNotExist:
         messages.error(request, 'There are no elections in progress!')
@@ -34,14 +35,18 @@ def home(request):
 def register_candidacy(request):
     user = request.user
     current_election_round = ElectionRound.objects.get(ongoing=True)
-    existing_candidate = ElectionRanking.objects.filter(candidate=user, election_round=current_election_round).exists()
+    existing_candidate = ElectionRanking.objects.filter(
+        candidate=user, election_round=current_election_round).exists()
 
     if request.method == 'POST' and not existing_candidate:
-        new_ranking = ElectionRanking(candidate=user, election_round=current_election_round)
+        new_ranking = ElectionRanking(
+            candidate=user, election_round=current_election_round)
         new_ranking.save()
-        messages.success(request, "You have been successfully registered for this election round.")
+        messages.success(request, \
+            "You have been successfully registered for this election round.")
     else:
-        messages.error(request, "You are already registered for this election round.")
+        messages.error(
+            request, "You are already registered for this election round.")
 
     return redirect('user_profile')
 
@@ -60,17 +65,23 @@ def vote_candidate(request, candidate_id):
         voter = request.user
         candidate_user = User.objects.get(id=candidate_id)
         current_election_round = ElectionRound.objects.get(ongoing=True)
-        current_candidate = ElectionRanking.objects.get(candidate=candidate_user, election_round=current_election_round)
-        existing_vote = Voter.objects.filter(user_votes=voter, election_round=current_election_round).exists()
+        current_candidate = ElectionRanking.objects.get(
+            candidate=candidate_user, election_round=current_election_round)
+        existing_vote = Voter.objects.filter(
+            user_votes=voter, election_round=current_election_round).exists()
         
         if voter != current_candidate.candidate:
             if not existing_vote:
                 current_candidate.no_votes += 1
                 current_candidate.save()
                 
-                new_voter = Voter(user_votes=voter, election_round=current_election_round, candidate=current_candidate)
+                new_voter = Voter(
+                    user_votes=voter, 
+                    election_round=current_election_round, 
+                    candidate=current_candidate)
                 new_voter.save()
-                messages.success(request, 'Your vote has been registered for ' + str(current_candidate.candidate) + "!")
+                messages.success(request, 'Your vote has been registered for '
+                                 + str(current_candidate.candidate) + "!")
             else:
                 messages.error(request, 'You have already voted!')
         else:
@@ -80,10 +91,12 @@ def vote_candidate(request, candidate_id):
 
 def election_rounds(request):
     rounds = ElectionRound.objects.all()
-    return render(request, 'elections/election_rounds.html', {'rounds': rounds})
+    return render(
+        request, 'elections/election_rounds.html', {'rounds': rounds})
 
 def round_ranking(request, round_id):
     round = ElectionRound.objects.get(id=round_id)
-    ranking = ElectionRanking.objects.filter(election_round=round).order_by('-no_votes')
+    ranking = ElectionRanking.objects.filter(
+        election_round=round).order_by('-no_votes')
     context = {'ranking': ranking, 'round': round}
     return render(request, 'elections/round_ranking.html', context)

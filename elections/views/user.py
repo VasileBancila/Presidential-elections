@@ -47,7 +47,8 @@ def logout_user(request):
 @login_required(login_url='login')
 def user_profile(request):
     if request.method == 'POST':
-        profile_form = EditProfileDescriptionForm(request.POST, request.FILES, instance=request.user.profile)
+        profile_form = EditProfileDescriptionForm(
+            request.POST, request.FILES, instance=request.user.profile)
 
         if profile_form.is_valid():
             profile_form.save()
@@ -60,11 +61,14 @@ def user_profile(request):
     
     try:
         current_round = ElectionRound.objects.get(ongoing=True)
-        existing_candidate = ElectionRanking.objects.filter(candidate=user, election_round=current_round).exists()    
+        existing_candidate = ElectionRanking.objects.filter(
+            candidate=user, election_round=current_round).exists()    
     except ElectionRound.DoesNotExist:
         current_round = None
         existing_candidate = False
     
-    context = {'profile_form': profile_form, 'existing_candidate': existing_candidate, 'current_round': current_round}
+    context = {'profile_form': profile_form, 
+               'existing_candidate': existing_candidate, 
+               'current_round': current_round}
 
     return render(request, 'elections/user_profile.html', context)
